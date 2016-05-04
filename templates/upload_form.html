@@ -1,7 +1,7 @@
 <html>
  <body>
   <h1>Here you can create your own album</h1>
-  <form>
+  <form action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
    <input type="file" name="file"/>
    <button type="submit">{{ uploadButtonName }}</button>
   </form>
