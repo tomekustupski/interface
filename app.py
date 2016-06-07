@@ -1,4 +1,5 @@
 import os, boto3
+from album_queue import request_album
 from uuid import uuid4
 from flask import Flask, render_template, jsonify, request
 app = Flask(__name__)
@@ -20,6 +21,17 @@ def upload():
     filename = f.filename
     updir = '/home/ec2-user/photoAlbumUi/upload'
     f.save(os.path.join(updir, filename))
+  return jsonify()
+
+@app.route("/request-album", methods=['POST'])
+def request_album_creation():
+  album = {
+    'photos': [
+      'https://s3.eu-central-1.amazonaws.com/153412-kkanclerz/photos/009d30b3d9a143a5937fbab9a50a4009/empty_image.jpg',
+      'https://s3.eu-central-1.amazonaws.com/153412-kkanclerz/photos/009d30b3d9a143a5937fbab9a50a4009/empty_image.jpg'
+    ]
+  }
+  request_album(album)
   return jsonify()
 
 def upload_s3(source_file):
