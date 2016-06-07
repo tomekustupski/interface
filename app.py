@@ -29,11 +29,15 @@ def upload():
 
 @app.route("/request-album", methods=['POST'])
 def request_album_creation():
+  email = request.form['email']
+  photosCount = len(request.form)
+  urls = []
+  for index in range(0, photosCount-1):
+    key = 'photos_%s' % index
+    urls.append(request.form[key])
+
   album = {
-    'photos': [
-      'https://s3.eu-central-1.amazonaws.com/153412-kkanclerz/photos/009d30b3d9a143a5937fbab9a50a4009/empty_image.jpg',
-      'https://s3.eu-central-1.amazonaws.com/153412-kkanclerz/photos/009d30b3d9a143a5937fbab9a50a4009/empty_image.jpg'
-    ]
+    'photos': urls
   }
   request_album(album)
   return jsonify()
@@ -42,7 +46,7 @@ def upload_s3(source_file, destination_filename):
   bucket_name = '153412-kkanclerz'
   s3 = boto3.resource('s3')
   bucket = s3.Bucket(bucket_name)
-  bucket.put_object(Key=destination_filename, Body=source_file)
+  bucket.put_object(Key=destination_filename, Body=source_file, ACL='public-read')
 
 def generate_filename(source_file):
   destination_filename = "photos/%s/%s" % (uuid4().hex, source_file.filename)
