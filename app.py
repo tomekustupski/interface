@@ -1,8 +1,10 @@
 import os, boto3
 from album_queue import request_album
 from uuid import uuid4
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, send_from_directory
 app = Flask(__name__)
+
+bucket_address = 'https://s3.eu-central-1.amazonaws.com/153412-kkanclerz'
 
 @app.route("/hello")
 def hello():
@@ -15,13 +17,15 @@ def index():
 @app.route("/upload", methods=['POST'])
 def upload():
   files = request.files
+  album = {
+    'photos': []
+  }
   for f in files.getlist('file'):
     print f
-    upload_s3(f)
-    filename = f.filename
-    updir = '/home/ec2-user/photoAlbumUi/upload'
-    f.save(os.path.join(updir, filename))
-  return jsonify()
+    destination_name = generate_filename(f)
+    album['photos'].append('%s/%s' % (bucket_address, destination_name))
+    upload_s3(f, destination_name)
+  return jsonify(album)
 
 @app.route("/request-album", methods=['POST'])
 def request_album_creation():
@@ -34,12 +38,15 @@ def request_album_creation():
   request_album(album)
   return jsonify()
 
-def upload_s3(source_file):
+def upload_s3(source_file, destination_filename):
   bucket_name = '153412-kkanclerz'
-  destination_filename = "photos/%s/%s" % (uuid4().hex, source_file.filename)
   s3 = boto3.resource('s3')
   bucket = s3.Bucket(bucket_name)
   bucket.put_object(Key=destination_filename, Body=source_file)
+
+def generate_filename(source_file):
+  destination_filename = "photos/%s/%s" % (uuid4().hex, source_file.filename)
+  return destination_filename
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)
