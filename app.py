@@ -4,11 +4,11 @@ from uuid import uuid4
 from flask import Flask, render_template, jsonify, request, send_from_directory
 app = Flask(__name__)
 
-bucket_address = 'https://s3.eu-central-1.amazonaws.com/153412-kkanclerz'
+bucket_address = 'https://s3.eu-central-1.amazonaws.com/191621'
 
 @app.route("/hello")
 def hello():
-    return "Hello World!"
+    return "Stwórz własny album w PDF'ie!"
 
 @app.route("/")
 def index():
@@ -44,7 +44,7 @@ def request_album_creation():
   return jsonify()
 
 def upload_s3(source_file, destination_filename):
-  bucket_name = '153412-kkanclerz'
+  bucket_name = '191621'
   s3 = boto3.resource('s3')
   bucket = s3.Bucket(bucket_name)
   bucket.put_object(Key=destination_filename, Body=source_file, ACL='public-read')
