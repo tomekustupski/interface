@@ -6,10 +6,6 @@ app = Flask(__name__)
 
 bucket_address = 'https://s3.eu-central-1.amazonaws.com/191621'
 
-@app.route("/hello")
-def hello():
-    return "Stwórz własny album w PDF"
-
 @app.route("/")
 def index():
   return render_template('upload_form.html', uploadButtonName="send")
