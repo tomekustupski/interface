@@ -8,7 +8,7 @@ bucket_address = 'https://s3.eu-central-1.amazonaws.com/191621'
 
 @app.route("/hello")
 def hello():
-    return "Stwórz własny album w PDF'ie!"
+    return "Stwórz własny album w PDF"
 
 @app.route("/")
 def index():
